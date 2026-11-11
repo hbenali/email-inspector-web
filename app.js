@@ -8,7 +8,7 @@
 
   var SELECTORS = ['default', 'google', 'selector1', 'selector2', 'k1', 'k2', 's1', 's2', 'mail', 'dkim', 'smtp', 'mandrill', 'zoho'];
   // Sibling tools of the suite: https://<tool>.hbenali.ovh/?domain=
-  var TOOLS = { mx: 'MX', spf: 'SPF', dkim: 'DKIM', dmarc: 'DMARC', bimi: 'BIMI', dnssec: 'DNSSEC', caa: 'CAA', ssl: 'SSL', rdap: 'RDAP', ip: 'IP' };
+  var TOOLS = { mx: 'MX', spf: 'SPF', dkim: 'DKIM', dmarc: 'DMARC', bimi: 'BIMI', dnssec: 'DNSSEC', caa: 'CAA', ssl: 'SSL', rdap: 'RDAP', ip: 'IP', mtasts: 'MTA-STS', dane: 'DANE', dns: 'DNS lookup', delegation: 'Delegation', ct: 'Certificate Transparency', 'headers-sec': 'Security headers' };
   // Weights of the heuristic score (sum 100). BIMI is shown but not scored.
   var WEIGHTS = { mx: 15, spf: 25, dkim: 15, dmarc: 30, mtasts: 4, tlsrpt: 3, dnssec: 8 };
 
@@ -417,7 +417,9 @@
   var views = { placeholder: $('placeholderState'), records: $('recordsContainer'), error: $('errorContainer') };
   function setView(name) { Object.keys(views).forEach(function (k) { views[k].hidden = k !== name; }); }
   var LABELS = { pass: 'ok', warn: 'warn', fail: 'fail', info: 'note' };
-  var AREA_TOOL = { mx: 'mx', spf: 'spf', dkim: 'dkim', dmarc: 'dmarc', bimi: 'bimi', mtasts: 'mx', tlsrpt: 'mx', dnssec: 'dnssec' };
+  var AREA_TOOL = { mx: 'mx', spf: 'spf', dkim: 'dkim', dmarc: 'dmarc', bimi: 'bimi', mtasts: 'mtasts', tlsrpt: 'mtasts', dnssec: 'dnssec' };
+  // The MTA-STS tool also covers TLS-RPT, so say both on the TLS-RPT line.
+  var AREA_TOOL_LABEL = { tlsrpt: 'MTA-STS and TLS-RPT' };
 
   function render(domain, areas, g) {
     var box = views.records;
@@ -487,14 +489,14 @@
       var p = el('p', 'provider');
       var tool = AREA_TOOL[a.id];
       p.append('Dedicated tool: ');
-      p.append(toolLink(tool, domain, TOOLS[tool] + ' checker for ' + domain));
+      p.append(toolLink(tool, domain, (AREA_TOOL_LABEL[a.id] || TOOLS[tool]) + ' checker for ' + domain));
       sec.append(p);
       box.append(sec);
     });
 
     var more = el('p', 'provider');
     more.append('Related tools for ' + domain + ': ');
-    ['caa', 'ssl', 'rdap', 'ip'].forEach(function (t, i) {
+    ['dane', 'dns', 'delegation', 'caa', 'ct', 'ssl', 'rdap', 'ip', 'headers-sec'].forEach(function (t, i) {
       if (i) more.append(' · ');
       more.append(toolLink(t, domain, TOOLS[t]));
     });
