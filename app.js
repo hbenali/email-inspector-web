@@ -193,7 +193,7 @@
       if (allTok === '-all') add(area, 'pass', 'Ends in -all: unlisted senders are rejected.', '');
       else if (allTok === '~all') add(area, 'pass', 'Ends in ~all (soft fail): unlisted senders are flagged, a common and acceptable policy.', 'Move to -all once you are sure every legitimate sender is listed.');
       else if (allTok === '?all') add(area, 'warn', '?all (neutral) gives receivers no policy.', 'Use ~all or -all.');
-      else if (allTok === '+all' || allTok === 'all') add(area, 'fail', allTok + ' authorises every server on the internet to send as this domain.', 'Replace it with -all or ~all.');
+      else if (allTok === '+all' || allTok === 'all') add(area, 'fail', allTok + ' authorizes every server on the internet to send as this domain.', 'Replace it with -all or ~all.');
       else if (redirect) add(area, 'info', 'No "all" mechanism; the policy comes from the redirect= target.', '');
       else add(area, 'warn', 'No "all" mechanism and no redirect: the record has no default result.', 'End the record with -all or ~all.');
       if (allIdx >= 0 && tokens.slice(allIdx + 1).some(function (t) { return !/^(exp|redirect)=/i.test(t); })) add(area, 'warn', 'Mechanisms after "all" are never evaluated.', 'Move "all" to the end of the record.');
@@ -283,7 +283,7 @@
       var r = await txt('_dmarc.' + domain);
       var recs = r.vals.filter(function (v) { return /^v=DMARC1\s*(;|$)/i.test(v); });
       if (!recs.length) {
-        add(area, 'fail', 'No DMARC record at _dmarc.' + domain + '. (For a subdomain, receivers also look at the organisational domain; this tool does not.)', 'Publish TXT _dmarc: "v=DMARC1; p=none; rua=mailto:dmarc@' + domain + '" to start monitoring, then move to quarantine and reject.');
+        add(area, 'fail', 'No DMARC record at _dmarc.' + domain + '. (For a subdomain, receivers also look at the organizational domain; this tool does not.)', 'Publish TXT _dmarc: "v=DMARC1; p=none; rua=mailto:dmarc@' + domain + '" to start monitoring, then move to quarantine and reject.');
         area.score = 0; area.summary = 'no DMARC record';
         return area;
       }
@@ -321,9 +321,9 @@
         await Promise.all(hosts.slice(0, 5).map(function (h) {
           return txt(domain + '._report._dmarc.' + h).then(function (a) {
             var ok = a.vals.some(function (v) { return /^v=DMARC1/i.test(v); });
-            if (ok) add(area, 'pass', 'External report host ' + h + ' has authorised this domain (' + domain + '._report._dmarc.' + h + ').', '');
-            else add(area, 'warn', 'Reports go to ' + h + ', but no authorisation record exists at ' + domain + '._report._dmarc.' + h + '; receivers may drop the reports (RFC 7489 section 7.1).', 'Ask ' + h + ' to publish "v=DMARC1" at that name, or use a mailbox in your own domain.');
-          }).catch(function () { add(area, 'info', 'Could not verify the external report authorisation for ' + h + '.', ''); });
+            if (ok) add(area, 'pass', 'External report host ' + h + ' has authorized this domain (' + domain + '._report._dmarc.' + h + ').', '');
+            else add(area, 'warn', 'Reports go to ' + h + ', but no authorization record exists at ' + domain + '._report._dmarc.' + h + '; receivers may drop the reports (RFC 7489 section 7.1).', 'Ask ' + h + ' to publish "v=DMARC1" at that name, or use a mailbox in your own domain.');
+          }).catch(function () { add(area, 'info', 'Could not verify the external report authorization for ' + h + '.', ''); });
         }));
       }
       if (t.ruf) add(area, 'info', 'Forensic reports requested (ruf=' + t.ruf + '); many receivers do not send them.', '');
