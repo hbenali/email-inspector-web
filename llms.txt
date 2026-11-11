@@ -1,0 +1,8 @@
+# Email Health Audit
+
+> Free, single-page tool that audits a domain's email DNS setup in one run and gives a heuristic A to F grade.
+
+Static site (no backend, no build step, no dependencies) at https://email.hbenali.ovh. Queries DNS-over-HTTPS (dns.google) from the browser and checks MX (hosts resolve, no CNAME, null MX), SPF (single record, -all or ~all, 10-lookup limit, +all and ptr), DKIM (13 common selectors, key type and length), DMARC (policy, pct, rua authorization), BIMI, MTA-STS and TLS-RPT (TXT records only) and the DNSSEC AD flag. Each finding has a level and a fix hint. The grade is a heuristic, not a standard.
+
+## Pages
+- [Email Health Audit](https://email.hbenali.ovh/): the tool itself.
